@@ -34,18 +34,27 @@ import { crearDeck, evaluacion, mostrarCarta, pedirCarta, actualizarPuntaje, rep
         btnPedir.disabled = false;
         btnDetener.disabled = false;
 
+        
         puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
-        puntosCrupier = repartirCarta(deck, puntosCrupier, puntajes, 1, divCartasCrupier);
-        puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
-
+        setTimeout(() => {
+            puntosCrupier = repartirCarta(deck, puntosCrupier, puntajes, 1, divCartasCrupier);
+        }, 100);
+        setTimeout(() => {
+             puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
+        }, 200);
+        setTimeout(() => {
+            let cartaOculta = mostrarCarta( 'Carta Oculta' ,true );
+            divCartasCrupier.append(cartaOculta);
+            if( puntosJugador === 21 ){
+                btnPedir.disabled = true;
+                btnDetener.click();
+            }
+        }, 300);
+        
         // Agregar carta oculta (boca abajo)
-        let cartaOculta = mostrarCarta( 'Carta Oculta' ,true );
-        divCartasCrupier.append(cartaOculta);
+        
 
-        if( puntosJugador === 21 ){
-            btnPedir.disabled = true;
-            btnDetener.click();
-        }
+        
     };
 
     // Eventos

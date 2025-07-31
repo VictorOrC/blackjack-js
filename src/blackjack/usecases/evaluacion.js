@@ -36,5 +36,5 @@ export const evaluacion = ( puntosJugador, puntosCrupier) => {
                         icon: "error"
                     });
                 }
-            }, 1000);
+            }, 400);
     }
