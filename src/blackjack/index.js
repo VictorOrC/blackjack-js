@@ -19,43 +19,41 @@ import { crearDeck, evaluacion, mostrarCarta, pedirCarta, actualizarPuntaje, rep
 
     
 
-    const inicializarJuego = () => {
-        deck = crearDeck( palos, figuras );
+    const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-        puntajes[0].textContent = 0;
-        puntajes[1].textContent = 0;
+const inicializarJuego = async () => {
+    deck = crearDeck(palos, figuras);
 
-        puntosJugador = 0;
-        puntosCrupier = 0;
+    puntajes[0].textContent = 0;
+    puntajes[1].textContent = 0;
 
-        divCartasCrupier.innerHTML = '';
-        divCartasJugador.innerHTML = '';
+    puntosJugador = 0;
+    puntosCrupier = 0;
 
-        btnPedir.disabled = false;
-        btnDetener.disabled = false;
+    divCartasCrupier.innerHTML = '';
+    divCartasJugador.innerHTML = '';
 
-        
-        puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
-        setTimeout(() => {
-            puntosCrupier = repartirCarta(deck, puntosCrupier, puntajes, 1, divCartasCrupier);
-        }, 100);
-        setTimeout(() => {
-             puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
-        }, 200);
-        setTimeout(() => {
-            let cartaOculta = mostrarCarta( 'Carta Oculta' ,true );
-            divCartasCrupier.append(cartaOculta);
-            if( puntosJugador === 21 ){
-                btnPedir.disabled = true;
-                btnDetener.click();
-            }
-        }, 300);
-        
-        // Agregar carta oculta (boca abajo)
-        
+    btnPedir.disabled = false;
+    btnDetener.disabled = false;
 
-        
-    };
+    puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
+    await esperar(500);
+
+    puntosCrupier = repartirCarta(deck, puntosCrupier, puntajes, 1, divCartasCrupier);
+    await esperar(500);
+
+    puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
+    await esperar(500);
+
+    const cartaOculta = mostrarCarta('Carta Oculta', true);
+    divCartasCrupier.append(cartaOculta);
+
+    if (puntosJugador === 21) {
+        btnPedir.disabled = true;
+        btnDetener.click();
+    }
+};
+
 
     // Eventos
     btnPedir.addEventListener('click', () => {
