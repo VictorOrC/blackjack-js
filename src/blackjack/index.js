@@ -19,44 +19,38 @@ import { crearDeck, evaluacion, mostrarCarta, pedirCarta, actualizarPuntaje, rep
 
     
 
-const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    const inicializarJuego = () => {
+        deck = crearDeck( palos, figuras );
 
-const mostrarCartaConPausa = async (deck, puntos, puntajes, idx, div) => {
-    puntos = repartirCarta(deck, puntos, puntajes, idx, div);
-    await esperar(500);
-    return puntos;
-};
+        puntajes[0].textContent = 0;
+        puntajes[1].textContent = 0;
 
-const inicializarJuego = async () => {
-    deck = crearDeck(palos, figuras);
+        puntosJugador = 0;
+        puntosCrupier = 0;
 
-    puntajes[0].textContent = 0;
-    puntajes[1].textContent = 0;
+        divCartasCrupier.innerHTML = '';
+        divCartasJugador.innerHTML = '';
 
-    puntosJugador = 0;
-    puntosCrupier = 0;
+        btnPedir.disabled = false;
+        btnDetener.disabled = false;
 
-    divCartasCrupier.innerHTML = '';
-    divCartasJugador.innerHTML = '';
-
-    btnPedir.disabled = false;
-    btnDetener.disabled = false;
-
-    // Cartas con pausa
-    puntosJugador = await mostrarCartaConPausa(deck, puntosJugador, puntajes, 0, divCartasJugador);
-    puntosCrupier = await mostrarCartaConPausa(deck, puntosCrupier, puntajes, 1, divCartasCrupier);
-    puntosJugador = await mostrarCartaConPausa(deck, puntosJugador, puntajes, 0, divCartasJugador);
-
-    // Carta oculta (sin pausa)
-    const cartaOculta = mostrarCarta('Carta Oculta', true);
-    divCartasCrupier.append(cartaOculta);
-
-    // Validación de blackjack
-    if (puntosJugador === 21) {
-        btnPedir.disabled = true;
-        btnDetener.click();
-    }
-};
+        
+        puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
+        setTimeout(() => {
+            puntosCrupier = repartirCarta(deck, puntosCrupier, puntajes, 1, divCartasCrupier);
+        }, 100);
+        setTimeout(() => {
+             puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
+        }, 200);
+        setTimeout(() => {
+            let cartaOculta = mostrarCarta( 'Carta Oculta' ,true );
+            divCartasCrupier.append(cartaOculta);
+            if( puntosJugador === 21 ){
+                btnPedir.disabled = true;
+                btnDetener.click();
+            }
+        }, 300);
+    };
 
     // Eventos
     btnPedir.addEventListener('click', () => {
