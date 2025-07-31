@@ -19,7 +19,13 @@ import { crearDeck, evaluacion, mostrarCarta, pedirCarta, actualizarPuntaje, rep
 
     
 
-    const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const mostrarCartaConPausa = async (deck, puntos, puntajes, idx, div) => {
+    puntos = repartirCarta(deck, puntos, puntajes, idx, div);
+    await esperar(500);
+    return puntos;
+};
 
 const inicializarJuego = async () => {
     deck = crearDeck(palos, figuras);
@@ -36,24 +42,21 @@ const inicializarJuego = async () => {
     btnPedir.disabled = false;
     btnDetener.disabled = false;
 
-    puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
-    await esperar(500);
+    // Cartas con pausa
+    puntosJugador = await mostrarCartaConPausa(deck, puntosJugador, puntajes, 0, divCartasJugador);
+    puntosCrupier = await mostrarCartaConPausa(deck, puntosCrupier, puntajes, 1, divCartasCrupier);
+    puntosJugador = await mostrarCartaConPausa(deck, puntosJugador, puntajes, 0, divCartasJugador);
 
-    puntosCrupier = repartirCarta(deck, puntosCrupier, puntajes, 1, divCartasCrupier);
-    await esperar(500);
-
-    puntosJugador = repartirCarta(deck, puntosJugador, puntajes, 0, divCartasJugador);
-    await esperar(500);
-
+    // Carta oculta (sin pausa)
     const cartaOculta = mostrarCarta('Carta Oculta', true);
     divCartasCrupier.append(cartaOculta);
 
+    // Validación de blackjack
     if (puntosJugador === 21) {
         btnPedir.disabled = true;
         btnDetener.click();
     }
 };
-
 
     // Eventos
     btnPedir.addEventListener('click', () => {
